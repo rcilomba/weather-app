@@ -14,18 +14,19 @@ function App() {
   const search = evt => {
     if (evt.key === "Enter") {
       if (!query) {
-        setErrorMessage('Please insert a city!');
-
-        return;
+        setErrorMessage('Please enter a City!');
+        setShowLocationBox(false);
+      } else {
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${api.key}&units=metric`)
+          .then(res => res.json())
+          .then(result => {
+            setWeather(result);
+            setQuery('');
+            setErrorMessage('');
+            setShowLocationBox(true);
+            console.log(result)
+          });
       }
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${api.key}&units=metric`)
-        .then(res => res.json())
-        .then(result => {
-          setWeather(result);
-          setQuery('');
-          setErrorMessage('');
-          console.log(result)
-        });
     }
   }
 
@@ -66,7 +67,7 @@ function App() {
         {errorMessage && (
           <div className="error-message">{errorMessage}</div>
         )}
-        {typeof weather.main !== "undefined" ? (
+        {showLocationBox && typeof weather.main !== "undefined" ? (
           <div>
             <div className="location-box">
               <div className="location">{weather.name}, {weather.sys.country}</div>
@@ -79,7 +80,7 @@ function App() {
               <div className="weather">{weather.weather[0].main}</div>
             </div>
           </div>
-        ) : ('')}
+        ) : null}
       </main>
     </div>
   );
