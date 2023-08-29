@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import OneSignal from 'react-onesignal';
 
 const api = {
   key: "61ae3c88e444a235897bb4086e509977",
@@ -6,6 +7,11 @@ const api = {
 }
 
 function App() {
+
+  useEffect(() => {
+    OneSignal.init({appId: process.env.REACT_APP_ONESIGNAL });
+  }, []);
+  
   const [query, setQuery] = useState('');
   const [weather, setWeather] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,7 +23,7 @@ function App() {
         setErrorMessage('Please enter a City!');
         setShowLocationBox(false);
       } else {
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${api.key}&units=metric`)
+        fetch(`${api.base}weather?q=${query}&appid=${api.key}&units=metric`)
           .then(res => res.json())
           .then(result => {
             setWeather(result);
@@ -89,4 +95,4 @@ function App() {
 export default App;
 
 
- 
+  
